@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+<div class="container">
+
+    <a th:replace="fragments/backlink :: event (eventName=${event.name})"></a>
+
+    <h2>Configurations</h2>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Eventname</th>
+            <th>Number of food choices</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="configuration: ${configurations}">
+            <td th:text="${configuration.name}"></td>
+            <td th:text="${configuration.event.name}"></td>
+            <td th:text="${configuration.numberOfFoodOptions}"></td>
+            <td th:with="alreadyImported=${#lists.contains(event.foodOptionConfigurations, configuration)}">
+                <a class="btn btn-success disabled" th:if="${alreadyImported}">
+                    <i class="fa fa-check-circle-o"></i>
+                    Imported
+                </a>
+                <a th:if="${!alreadyImported}" class="btn btn-secondary" th:href="@{'/event/' + ${event.name} + '/import/' + ${configuration.uuid}}">
+                    <i class="fa fa-hand-o-up" aria-hidden="true"></i>
+                    Import
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

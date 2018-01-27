@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div class="container">
+
+    <h1 style="display: inline;" th:text="'Event: ' + ${event.name}">Event: </h1>
+
+
+    <a class="btn btn-primary" style="float: right;" th:href="@{'/event/' +${event.name} + '/import'}">
+        Import
+    </a>
+
+    <a class="btn btn-primary" style="float: right;" th:href="@{'/event/' +${event.name} + '/invitation'}">
+        <i class="fa fa-user-plus" aria-hidden="true"></i>
+        Join
+    </a>
+
+
+    <div th:each="configuration: ${foodOptionConfigurations}">
+        <h2 style="display: inline;" th:text="${configuration.name}"></h2>
+
+        <form style="display: none" class="nameForm" th:action="@{'/event/' + ${event.name} + '/' + ${configuration.name} + '/change_name'}" method="post">
+            <label><input class="form-control" name="name" th:value="${configuration.name}"/></label>
+            <button type="submit" class="btn">
+                Submit
+            </button>
+        </form>
+
+        <a onclick="$(this).closest('div').find('.nameForm').css('display', 'initial');$(this).css('display', 'none');$(this).closest('div').find('h2').css('display', 'none');">
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+            edit
+        </a>
+
+        <form style="display: inline" th:action="@{'/event/' + ${event.name} + '/' + ${configuration.name} + '/delete'}" method="post">
+            <button type="submit" class="btn btn-primary" th:href="@{'/event/' + ${event.name} + '/' + ${configuration.name} + '/delete'}">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+                delete
+            </button>
+        </form>
+
+        <a class="btn btn-primary" th:href="@{'/event/' + ${event.name} + '/' + ${configuration.name}}">
+            <i class="fa fa-plus-square" aria-hidden="true"></i>
+            Add food
+        </a>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Extra options</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="foodOption: ${configuration.foodOptions}">
+                <td th:text="${foodOption.name}"></td>
+                <td th:text="${foodOption.priceAsString}"></td>
+                <td th:text="${foodOption.extraOptionsAsString}"></td>
+                <td>
+                    <form th:action="@{'/event/' + ${event.name} + '/' + ${configuration.name} +'/' + ${foodOption.name} + '/delete'}" method="post">
+                        <button type="submit" class="btn btn-primary" th:href="@{'/event/' + ${event.name} + '/' + ${configuration.name} + '/delete'}">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                            delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${!#lists.isEmpty(participants)}">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="byParticipant-tab" aria-controls="byParticipant" href="#byParticipant" role="tab" data-toggle="tab">By participant</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="byItem-tab" aria-controls="byItem" href="#byItem" role="tab" data-toggle="tab">By item</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" aria-labelledby="byParticipant-tab" id="byParticipant">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Food choices</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="participant: ${participants}">
+                        <td th:text="${participant.username}"></td>
+                        <td th:text="${participant.selectedChoicesAsString}"></td>
+                        <td th:text="${participant.totalPrice}"></td>
+                        <td>
+                            <a th:href="@{'/event/' + ${event.name} + '/remove/' + ${participant.username}}">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                                Remove
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" aria-labelledby="byItem-tab" id="byItem">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Food choice</th>
+                        <th>Size</th>
+                        <th>Extras</th>
+                        <th>Total price</th>
+                        <th>Count</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="chosenOption: ${chosenOptions}">
+                        <td th:text="${chosenOption.foodOptionName}"></td>
+                        <td th:text="${chosenOption.sizeName}"></td>
+                        <td th:text="${chosenOption.extraOptionName}"></td>
+                        <td th:text="${chosenOption.totalPriceAsString}"></td>
+                        <td th:text="${chosenOption.count}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

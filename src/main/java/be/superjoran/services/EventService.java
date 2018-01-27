@@ -1,0 +1,18 @@
+package be.superjoran.services;
+
+import be.superjoran.domain.Event;
+
+import java.util.List;
+
+public interface EventService {
+
+    Event saveOrUpdate(Event event);
+
+    Event findByName(String name);
+
+    List<Event> findByOwnerUsername(String username);
+
+    void deleteByName(String eventName);
+
+    void removeAll(Iterable<Event> events);
+}
