@@ -14,6 +14,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * BatchConfiguration
+ */
 @Configuration
 public class BatchConfiguration {
 
